@@ -7,7 +7,8 @@ import { v4 as uuidv4 } from "uuid";
 // UI components
 import Transcript from "@/components/transcript";
 import Events from "@/components/events";
-import BottomToolbar from "@/components/bottom-toolbar";
+import Header from "@/components/header";
+import RightSidebar from "@/components/right-sidebar";
 
 // Types
 import { AgentConfig, SessionStatus } from "@/lib/types";
@@ -22,17 +23,6 @@ import { createRealtimeConnection } from "@/lib/realtime-connection";
 
 // Agent configs
 import { allAgentSets, defaultAgentSetKey } from "@/app/agent-configs";
-
-import { AudioLines } from "lucide-react";
-
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 function VoiceAgent() {
   const searchParams = useSearchParams();
@@ -52,7 +42,7 @@ function VoiceAgent() {
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
   const [sessionStatus, setSessionStatus] = useState<SessionStatus>("DISCONNECTED");
 
-  const [isEventsPaneExpanded, setIsEventsPaneExpanded] = useState<boolean>(true);
+  const [isEventsPaneExpanded, setIsEventsPaneExpanded] = useState<boolean>(false);
   const [userText, setUserText] = useState<string>("");
   const [isPTTActive, setIsPTTActive] = useState<boolean>(false);
   const [isPTTUserSpeaking, setIsPTTUserSpeaking] = useState<boolean>(false);
@@ -77,27 +67,27 @@ function VoiceAgent() {
   });
 
   useEffect(() => {
-    let finalAgentConfig = searchParams.get("agentConfig");
-    if (!finalAgentConfig || !allAgentSets[finalAgentConfig]) {
-      finalAgentConfig = defaultAgentSetKey;
+    let agentConfigKey = searchParams.get("agentConfig");
+
+    if (!agentConfigKey || !allAgentSets[agentConfigKey]) {
+      agentConfigKey = defaultAgentSetKey;
       const url = new URL(window.location.toString());
-      url.searchParams.set("agentConfig", finalAgentConfig);
-      window.location.replace(url.toString());
-      return;
+      url.searchParams.set("agentConfig", agentConfigKey);
+      window.history.replaceState({}, "", url);
     }
 
-    const agents = allAgentSets[finalAgentConfig];
+    const agents = allAgentSets[agentConfigKey];
     const agentKeyToUse = agents[0]?.name || "";
 
-    setSelectedAgentName(agentKeyToUse);
     setSelectedAgentConfigSet(agents);
-  }, [searchParams]);
-
-  useEffect(() => {
-    if (selectedAgentName && sessionStatus === "DISCONNECTED") {
-      connectToRealtime();
+    if (!selectedAgentName) {
+      setSelectedAgentName(agentKeyToUse);
     }
-  }, [selectedAgentName]);
+    const storedLogsExpanded = localStorage.getItem("logsExpanded");
+    if (storedLogsExpanded) {
+      setIsEventsPaneExpanded(storedLogsExpanded === "true");
+    }
+  }, [searchParams, selectedAgentName]);
 
   useEffect(() => {
     if (sessionStatus === "CONNECTED" && selectedAgentConfigSet && selectedAgentName) {
@@ -105,7 +95,7 @@ function VoiceAgent() {
         (a) => a.name === selectedAgentName
       );
       addTranscriptBreadcrumb(`Agent: ${selectedAgentName}`, currentAgent);
-      updateSession(true);
+      updateSession(false);
     }
   }, [selectedAgentConfigSet, selectedAgentName, sessionStatus]);
 
@@ -330,15 +320,19 @@ function VoiceAgent() {
     }
   };
 
-  const handleAgentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newAgentConfig = e.target.value;
+  const handleAgentSetChange = (newAgentSetKey: string) => {
     const url = new URL(window.location.toString());
-    url.searchParams.set("agentConfig", newAgentConfig);
-    window.location.replace(url.toString());
+    url.searchParams.set("agentConfig", newAgentSetKey);
+    window.history.pushState({}, "", url);
+
+    const agents = allAgentSets[newAgentSetKey];
+    const agentKeyToUse = agents[0]?.name || "";
+
+    setSelectedAgentConfigSet(agents);
+    setSelectedAgentName(agentKeyToUse);
   };
 
-  const handleSelectedAgentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newAgentName = e.target.value;
+  const handleSelectedAgentChange = (newAgentName: string) => {
     setSelectedAgentName(newAgentName);
   };
 
@@ -346,10 +340,6 @@ function VoiceAgent() {
     const storedPushToTalkUI = localStorage.getItem("pushToTalkUI");
     if (storedPushToTalkUI) {
       setIsPTTActive(storedPushToTalkUI === "true");
-    }
-    const storedLogsExpanded = localStorage.getItem("logsExpanded");
-    if (storedLogsExpanded) {
-      setIsEventsPaneExpanded(storedLogsExpanded === "true");
     }
     const storedAudioPlaybackEnabled = localStorage.getItem("audioPlaybackEnabled");
     if (storedAudioPlaybackEnabled) {
@@ -381,84 +371,46 @@ function VoiceAgent() {
     }
   }, [isAudioPlaybackEnabled]);
 
-  const agentSetKey = searchParams.get("agentConfig") || "default";
+  const agentSetKey = selectedAgentConfigSet
+    ? Object.keys(allAgentSets).find(
+        (key) => allAgentSets[key] === selectedAgentConfigSet
+      )
+    : searchParams.get("agentConfig") || defaultAgentSetKey;
 
   return (
-    <div className="text-base flex flex-col h-screen bg-muted text-foreground relative">
-      <div className="p-5 text-lg font-semibold flex justify-between items-center">
-        <div className="flex items-center">
-          <div onClick={() => window.location.reload()} style={{ cursor: "pointer" }}>
-            <AudioLines className="w-6 h-6 mr-2" />
-          </div>
-          <div>
-            Realtime Voice <span className="text-muted-foreground">Agent</span>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <Label className="flex items-center gap-1 mr-2">Scenario</Label>
-          <div className="relative inline-block">
-            <Select
-              value={agentSetKey}
-              onValueChange={(value) => {
-                const url = new URL(window.location.toString());
-                url.searchParams.set("agentConfig", value);
-                window.location.replace(url.toString());
-              }}
-            >
-              <SelectTrigger className="w-[180px] font-normal bg-background">
-                <SelectValue placeholder="Select scenario" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.keys(allAgentSets).map((agentKey) => (
-                  <SelectItem key={agentKey} value={agentKey}>
-                    {agentKey}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+    <div className="flex flex-col h-screen bg-muted text-foreground relative">
+      <Header />
 
-          {agentSetKey && (
-            <div className="flex items-center ml-6">
-              <Label className="flex items-center gap-1 mr-2">Agent</Label>
-              <div className="relative inline-block">
-                <Select value={selectedAgentName} onValueChange={setSelectedAgentName}>
-                  <SelectTrigger className="w-[180px] font-normal bg-background">
-                    <SelectValue placeholder="Select agent" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {selectedAgentConfigSet?.map((agent) => (
-                      <SelectItem key={agent.name} value={agent.name}>
-                        {agent.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          )}
+      <div className="flex flex-1 gap-2 px-2 pb-2 overflow-hidden relative">
+        <div className="flex flex-1 flex-col min-w-0">
+          <Transcript
+            userText={userText}
+            setUserText={setUserText}
+            onSendMessage={handleSendTextMessage}
+            canSend={
+              sessionStatus === "CONNECTED" && dcRef.current?.readyState === "open"
+            }
+            sessionStatus={sessionStatus}
+            onToggleConnection={onToggleConnection}
+          />
         </div>
-      </div>
-
-      <div className="flex flex-1 gap-2 px-2 overflow-hidden relative">
-        <Transcript
-          userText={userText}
-          setUserText={setUserText}
-          onSendMessage={handleSendTextMessage}
-          canSend={sessionStatus === "CONNECTED" && dcRef.current?.readyState === "open"}
-        />
 
         <Events isExpanded={isEventsPaneExpanded} />
-      </div>
 
-      <BottomToolbar
-        sessionStatus={sessionStatus}
-        onToggleConnection={onToggleConnection}
-        isEventsPaneExpanded={isEventsPaneExpanded}
-        setIsEventsPaneExpanded={setIsEventsPaneExpanded}
-        isAudioPlaybackEnabled={isAudioPlaybackEnabled}
-        setIsAudioPlaybackEnabled={setIsAudioPlaybackEnabled}
-      />
+        <RightSidebar
+          sessionStatus={sessionStatus}
+          isAudioPlaybackEnabled={isAudioPlaybackEnabled}
+          setIsAudioPlaybackEnabled={setIsAudioPlaybackEnabled}
+          isEventsPaneExpanded={isEventsPaneExpanded}
+          setIsEventsPaneExpanded={setIsEventsPaneExpanded}
+          agentSetKey={agentSetKey || defaultAgentSetKey}
+          handleAgentSetChange={handleAgentSetChange}
+          allAgentSets={allAgentSets}
+          selectedAgentName={selectedAgentName}
+          handleSelectedAgentChange={handleSelectedAgentChange}
+          selectedAgentConfigSet={selectedAgentConfigSet}
+        />
+      </div>
     </div>
   );
 }

@@ -15,9 +15,9 @@ function Events({ isExpanded }: EventsProps) {
   const { loggedEvents, toggleExpand } = useEvent();
 
   const getDirectionArrow = (direction: string) => {
-    if (direction === "client") return { symbol: "▲", color: "#7f5af0" };
-    if (direction === "server") return { symbol: "▼", color: "#2cb67d" };
-    return { symbol: "•", color: "#555" };
+    if (direction === "client") return { symbol: "▲", color: "var(--chart-1)" };
+    if (direction === "server") return { symbol: "▼", color: "var(--chart-2)" };
+    return { symbol: "•", color: "var(--muted-foreground)" };
   };
 
   useEffect(() => {
@@ -34,16 +34,13 @@ function Events({ isExpanded }: EventsProps) {
   return (
     <div
       className={
-        (isExpanded ? "w-1/2 overflow-auto" : "w-0 overflow-hidden opacity-0") +
-        " transition-all rounded-xl duration-200 ease-in-out flex flex-col bg-white"
+        (isExpanded ? "w-1/3 overflow-auto" : "w-0 overflow-hidden opacity-0") +
+        " transition-all rounded-xl duration-200 ease-in-out flex flex-col bg-background text-foreground"
       }
       ref={eventLogsContainerRef}
     >
       {isExpanded && (
         <div>
-          <div className="font-semibold px-6 py-4 sticky top-0 z-10 text-base border-b bg-white">
-            Logs
-          </div>
           <div>
             {loggedEvents.map((log) => {
               const arrowInfo = getDirectionArrow(log.direction);
@@ -52,10 +49,7 @@ function Events({ isExpanded }: EventsProps) {
                 log.eventData?.response?.status_details?.error != null;
 
               return (
-                <div
-                  key={log.id}
-                  className="border-t border-gray-200 py-2 px-6 font-mono"
-                >
+                <div key={log.id} className="border-t border-border py-2 px-6 font-mono">
                   <div
                     onClick={() => toggleExpand(log.id)}
                     className="flex items-center justify-between cursor-pointer"
@@ -66,20 +60,21 @@ function Events({ isExpanded }: EventsProps) {
                       </span>
                       <span
                         className={
-                          "flex-1 text-sm " + (isError ? "text-red-600" : "text-gray-800")
+                          "flex-1 text-sm " +
+                          (isError ? "text-destructive" : "text-foreground")
                         }
                       >
                         {log.eventName}
                       </span>
                     </div>
-                    <div className="text-gray-500 ml-1 text-xs whitespace-nowrap">
+                    <div className="text-muted-foreground ml-1 text-xs whitespace-nowrap">
                       {log.timestamp}
                     </div>
                   </div>
 
                   {log.expanded && log.eventData && (
-                    <div className="text-gray-800 text-left">
-                      <pre className="border-l-2 ml-1 border-gray-200 whitespace-pre-wrap break-words font-mono text-xs mb-2 mt-2 pl-2">
+                    <div className="text-foreground text-left">
+                      <pre className="border-l-2 ml-1 border-border whitespace-pre-wrap break-words font-mono text-xs mb-2 mt-2 pl-2">
                         {JSON.stringify(log.eventData, null, 2)}
                       </pre>
                     </div>

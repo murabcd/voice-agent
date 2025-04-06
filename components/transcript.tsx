@@ -1,9 +1,8 @@
 "use-client";
 
 import React, { useEffect, useRef, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import { TranscriptItem } from "@/lib/types";
-import Image from "next/image";
+import { Markdown } from "@/components/markdown";
+import { TranscriptItem, SessionStatus } from "@/lib/types";
 import { useTranscript } from "@/app/contexts/transcript-context";
 
 import { Button } from "@/components/ui/button";
@@ -15,14 +14,42 @@ export interface TranscriptProps {
   setUserText: (val: string) => void;
   onSendMessage: () => void;
   canSend: boolean;
+  sessionStatus: SessionStatus;
+  onToggleConnection: () => void;
 }
 
-function Transcript({ userText, setUserText, onSendMessage, canSend }: TranscriptProps) {
+function Transcript({
+  userText,
+  setUserText,
+  onSendMessage,
+  canSend,
+  sessionStatus,
+  onToggleConnection,
+}: TranscriptProps) {
   const { transcriptItems, toggleTranscriptItemExpand } = useTranscript();
   const transcriptRef = useRef<HTMLDivElement | null>(null);
   const [prevLogs, setPrevLogs] = useState<TranscriptItem[]>([]);
   const [justCopied, setJustCopied] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const isConnected = sessionStatus === "CONNECTED";
+  const isConnecting = sessionStatus === "CONNECTING";
+
+  function getConnectionButtonLabel() {
+    if (isConnected) return "Disconnect";
+    if (isConnecting) return "Connecting...";
+    return "Connect";
+  }
+
+  function getConnectionButtonClasses() {
+    const baseClasses = "p-2 w-36 h-10";
+    const cursorClass = isConnecting ? "cursor-not-allowed" : "cursor-pointer";
+
+    if (isConnected) {
+      return `bg-destructive hover:bg-destructive/90 text-destructive-foreground ${cursorClass} ${baseClasses}`;
+    }
+    return `bg-primary hover:bg-primary/90 text-primary-foreground ${cursorClass} ${baseClasses}`;
+  }
 
   function scrollToBottom() {
     if (transcriptRef.current) {
@@ -46,7 +73,6 @@ function Transcript({ userText, setUserText, onSendMessage, canSend }: Transcrip
     setPrevLogs(transcriptItems);
   }, [transcriptItems]);
 
-  // Autofocus on text box input on load
   useEffect(() => {
     if (canSend && inputRef.current) {
       inputRef.current.focus();
@@ -65,7 +91,7 @@ function Transcript({ userText, setUserText, onSendMessage, canSend }: Transcrip
   };
 
   return (
-    <div className="flex flex-col flex-1 bg-white min-h-0 rounded-xl">
+    <div className="flex flex-col flex-1 bg-background min-h-0 rounded-xl">
       <div className="relative flex-1 min-h-0">
         <Button
           variant="secondary"
@@ -78,7 +104,7 @@ function Transcript({ userText, setUserText, onSendMessage, canSend }: Transcrip
 
         <div
           ref={transcriptRef}
-          className="overflow-auto p-4 flex flex-col gap-y-4 h-full"
+          className="overflow-auto p-4 flex flex-col gap-y-4 h-full rounded-xl bg-background"
         >
           {transcriptItems.map((item) => {
             const {
@@ -103,10 +129,12 @@ function Transcript({ userText, setUserText, onSendMessage, canSend }: Transcrip
                 isUser ? "items-end" : "items-start"
               }`;
               const bubbleBase = `max-w-lg p-3 rounded-xl ${
-                isUser ? "bg-gray-900 text-gray-100" : "bg-gray-100 text-black"
+                isUser ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
               }`;
               const isBracketedMessage = title.startsWith("[") && title.endsWith("]");
-              const messageStyle = isBracketedMessage ? "italic text-gray-400" : "";
+              const messageStyle = isBracketedMessage
+                ? "italic text-muted-foreground"
+                : "";
               const displayTitle = isBracketedMessage ? title.slice(1, -1) : title;
 
               return (
@@ -114,13 +142,13 @@ function Transcript({ userText, setUserText, onSendMessage, canSend }: Transcrip
                   <div className={bubbleBase}>
                     <div
                       className={`text-xs ${
-                        isUser ? "text-gray-400" : "text-gray-500"
+                        isUser ? "text-primary-foreground/60" : "text-muted-foreground"
                       } font-mono`}
                     >
                       {timestamp}
                     </div>
                     <div className={`whitespace-pre-wrap ${messageStyle}`}>
-                      <ReactMarkdown>{displayTitle}</ReactMarkdown>
+                      <Markdown>{displayTitle}</Markdown>
                     </div>
                   </div>
                 </div>
@@ -129,18 +157,18 @@ function Transcript({ userText, setUserText, onSendMessage, canSend }: Transcrip
               return (
                 <div
                   key={itemId}
-                  className="flex flex-col justify-start items-start text-gray-500 text-sm"
+                  className="flex flex-col justify-start items-start text-muted-foreground text-sm"
                 >
                   <span className="text-xs font-mono">{timestamp}</span>
                   <div
-                    className={`whitespace-pre-wrap flex items-center font-mono text-sm text-gray-800 ${
+                    className={`whitespace-pre-wrap flex items-center font-mono text-sm text-foreground ${
                       data ? "cursor-pointer" : ""
                     }`}
                     onClick={() => data && toggleTranscriptItemExpand(itemId)}
                   >
                     {data && (
                       <span
-                        className={`text-gray-400 mr-1 transform transition-transform duration-200 select-none font-mono ${
+                        className={`text-muted-foreground mr-1 transform transition-transform duration-200 select-none font-mono ${
                           expanded ? "rotate-90" : "rotate-0"
                         }`}
                       >
@@ -150,8 +178,8 @@ function Transcript({ userText, setUserText, onSendMessage, canSend }: Transcrip
                     {title}
                   </div>
                   {expanded && data && (
-                    <div className="text-gray-800 text-left">
-                      <pre className="border-l-2 ml-1 border-gray-200 whitespace-pre-wrap break-words font-mono text-xs mb-2 mt-2 pl-2">
+                    <div className="text-foreground text-left">
+                      <pre className="border-l-2 ml-1 border-border whitespace-pre-wrap break-words font-mono text-xs mb-2 mt-2 pl-2">
                         {JSON.stringify(data, null, 2)}
                       </pre>
                     </div>
@@ -159,11 +187,10 @@ function Transcript({ userText, setUserText, onSendMessage, canSend }: Transcrip
                 </div>
               );
             } else {
-              // Fallback if type is neither MESSAGE nor BREADCRUMB
               return (
                 <div
                   key={itemId}
-                  className="flex justify-center text-gray-500 text-sm italic font-mono"
+                  className="flex justify-center text-muted-foreground text-sm italic font-mono"
                 >
                   Unknown item type: {type}{" "}
                   <span className="ml-2 text-xs">{timestamp}</span>
@@ -174,28 +201,37 @@ function Transcript({ userText, setUserText, onSendMessage, canSend }: Transcrip
         </div>
       </div>
 
-      <div className="p-4 flex items-center gap-x-2 flex-shrink-0 border-t border-gray-200">
-        <Input
-          ref={inputRef}
-          type="text"
-          value={userText}
-          onChange={(e) => setUserText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && canSend) {
-              onSendMessage();
-            }
-          }}
-          className="flex-1 px-4 py-2 focus:outline-none"
-          placeholder="Type a message..."
-        />
+      <div className="p-4 flex items-center justify-between gap-x-2 flex-shrink-0 border-t border-border">
         <Button
-          size="icon"
-          onClick={onSendMessage}
-          disabled={!canSend || !userText.trim()}
-          className="rounded-full px-2 py-2 disabled:opacity-50"
+          onClick={onToggleConnection}
+          className={getConnectionButtonClasses()}
+          disabled={isConnecting}
         >
-          <ArrowUp />
+          {getConnectionButtonLabel()}
         </Button>
+        <div className="flex-1 flex items-center gap-x-2">
+          <Input
+            ref={inputRef}
+            type="text"
+            value={userText}
+            onChange={(e) => setUserText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && canSend) {
+                onSendMessage();
+              }
+            }}
+            className="flex-1 px-4 py-2 focus:outline-none"
+            placeholder="Follow up..."
+          />
+          <Button
+            size="icon"
+            onClick={onSendMessage}
+            disabled={!canSend || !userText.trim()}
+            className="rounded-full px-2 py-2 disabled:opacity-50"
+          >
+            <ArrowUp />
+          </Button>
+        </div>
       </div>
     </div>
   );
