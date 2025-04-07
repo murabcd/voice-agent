@@ -15,7 +15,7 @@ type AllAgentConfigsType = { [key: string]: AgentConfig[] };
 interface ScenarioSelectorProps {
   agentSetKey: string;
   handleAgentSetChange: (value: string) => void;
-  allAgentSets: AllAgentConfigsType; // Use the defined type
+  allAgentSets: AllAgentConfigsType;
 }
 
 const ScenarioSelector: React.FC<ScenarioSelectorProps> = ({

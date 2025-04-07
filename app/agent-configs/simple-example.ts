@@ -18,7 +18,7 @@ const greeter: AgentConfig = {
   downstreamAgents: [haiku],
 };
 
-// add the transfer tool to point to downstreamAgents
+// Add the transfer tool to point to downstreamAgents
 const agents = injectTransferTools([greeter, haiku]);
 
 export default agents;

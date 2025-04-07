@@ -35,7 +35,7 @@ function Events({ isExpanded }: EventsProps) {
     <div
       className={
         (isExpanded ? "w-1/3 overflow-auto" : "w-0 overflow-hidden opacity-0") +
-        " transition-all rounded-xl duration-200 ease-in-out flex flex-col bg-background text-foreground"
+        " transition-all rounded-xl duration-200 ease-in-out flex flex-col bg-muted text-foreground"
       }
       ref={eventLogsContainerRef}
     >
@@ -55,7 +55,10 @@ function Events({ isExpanded }: EventsProps) {
                     className="flex items-center justify-between cursor-pointer"
                   >
                     <div className="flex items-center flex-1">
-                      <span style={{ color: arrowInfo.color }} className="ml-1 mr-2">
+                      <span
+                        style={{ color: arrowInfo.color, fontSize: "0.8em" }}
+                        className="ml-1 mr-2"
+                      >
                         {arrowInfo.symbol}
                       </span>
                       <span

@@ -27,7 +27,7 @@ export interface Tool {
 
 export interface AgentConfig {
   name: string;
-  publicDescription: string; // gives context to agent transfer tool
+  publicDescription: string;
   instructions: string;
   tools: Tool[];
   toolLogic?: Record<
@@ -104,5 +104,5 @@ export interface LoggedEvent {
   expanded: boolean;
   timestamp: string;
   eventName: string;
-  eventData: Record<string, any>; // can have arbitrary objects logged
+  eventData: Record<string, any>;
 }

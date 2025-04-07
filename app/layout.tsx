@@ -15,8 +15,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Realtime Voice Agent",
-  description: "Voice",
+  title: "Voice",
+  description: "Open source realtime voice agent.",
+  icons: {
+    icon: [
+      {
+        media: "(prefers-color-scheme: light)",
+        url: "/logo.svg",
+      },
+      {
+        media: "(prefers-color-scheme: dark)",
+        url: "/logo-light.svg",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

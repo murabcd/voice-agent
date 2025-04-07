@@ -2,54 +2,20 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Markdown } from "@/components/markdown";
-import { TranscriptItem, SessionStatus } from "@/lib/types";
+import { TranscriptItem } from "@/lib/types";
 import { useTranscript } from "@/app/contexts/transcript-context";
-
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ArrowUp, Copy } from "lucide-react";
+import { Copy } from "lucide-react";
 
 export interface TranscriptProps {
-  userText: string;
-  setUserText: (val: string) => void;
-  onSendMessage: () => void;
-  canSend: boolean;
-  sessionStatus: SessionStatus;
-  onToggleConnection: () => void;
+  className?: string;
 }
 
-function Transcript({
-  userText,
-  setUserText,
-  onSendMessage,
-  canSend,
-  sessionStatus,
-  onToggleConnection,
-}: TranscriptProps) {
+function Transcript({ className = "" }: TranscriptProps) {
   const { transcriptItems, toggleTranscriptItemExpand } = useTranscript();
   const transcriptRef = useRef<HTMLDivElement | null>(null);
   const [prevLogs, setPrevLogs] = useState<TranscriptItem[]>([]);
   const [justCopied, setJustCopied] = useState(false);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
-  const isConnected = sessionStatus === "CONNECTED";
-  const isConnecting = sessionStatus === "CONNECTING";
-
-  function getConnectionButtonLabel() {
-    if (isConnected) return "Disconnect";
-    if (isConnecting) return "Connecting...";
-    return "Connect";
-  }
-
-  function getConnectionButtonClasses() {
-    const baseClasses = "p-2 w-36 h-10";
-    const cursorClass = isConnecting ? "cursor-not-allowed" : "cursor-pointer";
-
-    if (isConnected) {
-      return `bg-destructive hover:bg-destructive/90 text-destructive-foreground ${cursorClass} ${baseClasses}`;
-    }
-    return `bg-primary hover:bg-primary/90 text-primary-foreground ${cursorClass} ${baseClasses}`;
-  }
 
   function scrollToBottom() {
     if (transcriptRef.current) {
@@ -73,12 +39,6 @@ function Transcript({
     setPrevLogs(transcriptItems);
   }, [transcriptItems]);
 
-  useEffect(() => {
-    if (canSend && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [canSend]);
-
   const handleCopyTranscript = async () => {
     if (!transcriptRef.current) return;
     try {
@@ -91,7 +51,7 @@ function Transcript({
   };
 
   return (
-    <div className="flex flex-col flex-1 bg-background min-h-0 rounded-xl">
+    <div className={`flex flex-col flex-1 min-h-0 rounded-xl ${className}`}>
       <div className="relative flex-1 min-h-0">
         <Button
           variant="secondary"
@@ -104,7 +64,7 @@ function Transcript({
 
         <div
           ref={transcriptRef}
-          className="overflow-auto p-4 flex flex-col gap-y-4 h-full rounded-xl bg-background"
+          className="overflow-auto p-4 flex flex-col gap-y-4 h-full rounded-xl bg-muted text-foreground"
         >
           {transcriptItems.map((item) => {
             const {
@@ -129,7 +89,9 @@ function Transcript({
                 isUser ? "items-end" : "items-start"
               }`;
               const bubbleBase = `max-w-lg p-3 rounded-xl ${
-                isUser ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+                isUser
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-background text-foreground"
               }`;
               const isBracketedMessage = title.startsWith("[") && title.endsWith("]");
               const messageStyle = isBracketedMessage
@@ -198,39 +160,6 @@ function Transcript({
               );
             }
           })}
-        </div>
-      </div>
-
-      <div className="p-4 flex items-center justify-between gap-x-2 flex-shrink-0 border-t border-border">
-        <Button
-          onClick={onToggleConnection}
-          className={getConnectionButtonClasses()}
-          disabled={isConnecting}
-        >
-          {getConnectionButtonLabel()}
-        </Button>
-        <div className="flex-1 flex items-center gap-x-2">
-          <Input
-            ref={inputRef}
-            type="text"
-            value={userText}
-            onChange={(e) => setUserText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && canSend) {
-                onSendMessage();
-              }
-            }}
-            className="flex-1 px-4 py-2 focus:outline-none"
-            placeholder="Follow up..."
-          />
-          <Button
-            size="icon"
-            onClick={onSendMessage}
-            disabled={!canSend || !userText.trim()}
-            className="rounded-full px-2 py-2 disabled:opacity-50"
-          >
-            <ArrowUp />
-          </Button>
         </div>
       </div>
     </div>

@@ -4,24 +4,20 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 
-// UI components
 import Transcript from "@/components/transcript";
 import Events from "@/components/events";
 import Header from "@/components/header";
 import RightSidebar from "@/components/right-sidebar";
+import Messages from "@/components/messages";
 
-// Types
 import { AgentConfig, SessionStatus } from "@/lib/types";
 
-// Context providers & hooks
 import { useTranscript } from "@/app/contexts/transcript-context";
 import { useEvent } from "@/app/contexts/event-context";
 import { useHandleServerEvent } from "@/hooks/use-handle-server-event";
 
-// Utilities
 import { createRealtimeConnection } from "@/lib/realtime-connection";
 
-// Agent configs
 import { allAgentSets, defaultAgentSetKey } from "@/app/agent-configs";
 
 function VoiceAgent() {
@@ -44,8 +40,6 @@ function VoiceAgent() {
 
   const [isEventsPaneExpanded, setIsEventsPaneExpanded] = useState<boolean>(false);
   const [userText, setUserText] = useState<string>("");
-  const [isPTTActive, setIsPTTActive] = useState<boolean>(false);
-  const [isPTTUserSpeaking, setIsPTTUserSpeaking] = useState<boolean>(false);
   const [isAudioPlaybackEnabled, setIsAudioPlaybackEnabled] = useState<boolean>(true);
 
   const sendClientEvent = (eventObj: any, eventNameSuffix = "") => {
@@ -95,18 +89,16 @@ function VoiceAgent() {
         (a) => a.name === selectedAgentName
       );
       addTranscriptBreadcrumb(`Agent: ${selectedAgentName}`, currentAgent);
-      updateSession(false);
+      updateSession(true);
     }
   }, [selectedAgentConfigSet, selectedAgentName, sessionStatus]);
 
   useEffect(() => {
     if (sessionStatus === "CONNECTED") {
-      console.log(
-        `updatingSession, isPTTACtive=${isPTTActive} sessionStatus=${sessionStatus}`
-      );
+      console.log(`updatingSession, sessionStatus=${sessionStatus}`);
       updateSession();
     }
-  }, [isPTTActive]);
+  }, []);
 
   const fetchEphemeralKey = async (): Promise<string | null> => {
     logClientEvent({ url: "/session" }, "fetch_session_token_request");
@@ -176,7 +168,6 @@ function VoiceAgent() {
     }
     setDataChannel(null);
     setSessionStatus("DISCONNECTED");
-    setIsPTTUserSpeaking(false);
 
     logClientEvent({}, "disconnected");
   };
@@ -213,15 +204,13 @@ function VoiceAgent() {
       (a) => a.name === selectedAgentName
     );
 
-    const turnDetection = isPTTActive
-      ? null
-      : {
-          type: "server_vad",
-          threshold: 0.5,
-          prefix_padding_ms: 300,
-          silence_duration_ms: 200,
-          create_response: true,
-        };
+    const turnDetection = {
+      type: "server_vad",
+      threshold: 0.5,
+      prefix_padding_ms: 300,
+      silence_duration_ms: 500,
+      create_response: true,
+    };
 
     const instructions = currentAgent?.instructions || "";
     const tools = currentAgent?.tools || [];
@@ -234,9 +223,10 @@ function VoiceAgent() {
         voice: "coral",
         input_audio_format: "pcm16",
         output_audio_format: "pcm16",
-        input_audio_transcription: { model: "whisper-1" },
+        input_audio_transcription: { model: "gpt-4o-transcribe" },
         turn_detection: turnDetection,
         tools,
+        input_audio_noise_reduction: { type: "near_field" }, // TODO: Remove this once we have a better way to handle AEC
       },
     };
 
@@ -290,27 +280,6 @@ function VoiceAgent() {
     sendClientEvent({ type: "response.create" }, "trigger response");
   };
 
-  const handleTalkButtonDown = () => {
-    if (sessionStatus !== "CONNECTED" || dataChannel?.readyState !== "open") return;
-    cancelAssistantSpeech();
-
-    setIsPTTUserSpeaking(true);
-    sendClientEvent({ type: "input_audio_buffer.clear" }, "clear PTT buffer");
-  };
-
-  const handleTalkButtonUp = () => {
-    if (
-      sessionStatus !== "CONNECTED" ||
-      dataChannel?.readyState !== "open" ||
-      !isPTTUserSpeaking
-    )
-      return;
-
-    setIsPTTUserSpeaking(false);
-    sendClientEvent({ type: "input_audio_buffer.commit" }, "commit PTT");
-    sendClientEvent({ type: "response.create" }, "trigger response PTT");
-  };
-
   const onToggleConnection = () => {
     if (sessionStatus === "CONNECTED" || sessionStatus === "CONNECTING") {
       disconnectFromRealtime();
@@ -337,19 +306,11 @@ function VoiceAgent() {
   };
 
   useEffect(() => {
-    const storedPushToTalkUI = localStorage.getItem("pushToTalkUI");
-    if (storedPushToTalkUI) {
-      setIsPTTActive(storedPushToTalkUI === "true");
-    }
     const storedAudioPlaybackEnabled = localStorage.getItem("audioPlaybackEnabled");
     if (storedAudioPlaybackEnabled) {
       setIsAudioPlaybackEnabled(storedAudioPlaybackEnabled === "true");
     }
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem("pushToTalkUI", isPTTActive.toString());
-  }, [isPTTActive]);
 
   useEffect(() => {
     localStorage.setItem("logsExpanded", isEventsPaneExpanded.toString());
@@ -378,12 +339,17 @@ function VoiceAgent() {
     : searchParams.get("agentConfig") || defaultAgentSetKey;
 
   return (
-    <div className="flex flex-col h-screen bg-muted text-foreground relative">
+    <div className="flex flex-col h-screen relative">
       <Header />
 
       <div className="flex flex-1 gap-2 px-2 pb-2 overflow-hidden relative">
         <div className="flex flex-1 flex-col min-w-0">
-          <Transcript
+          <div className="flex flex-1 gap-2 min-h-0">
+            <Transcript className="flex-1" />
+            <Events isExpanded={isEventsPaneExpanded} />
+          </div>
+
+          <Messages
             userText={userText}
             setUserText={setUserText}
             onSendMessage={handleSendTextMessage}
@@ -394,8 +360,6 @@ function VoiceAgent() {
             onToggleConnection={onToggleConnection}
           />
         </div>
-
-        <Events isExpanded={isEventsPaneExpanded} />
 
         <RightSidebar
           sessionStatus={sessionStatus}
