@@ -39,7 +39,7 @@ function Events({ isExpanded }: EventsProps) {
       className={cn(
         "transition-all rounded-xl duration-200 ease-in-out flex flex-col bg-muted text-foreground",
         {
-          "w-1/3 overflow-auto md:ml-2": isExpanded,
+          "w-1/3 overflow-auto md:ml-2 md:p-4": isExpanded,
           "w-0 overflow-hidden opacity-0": !isExpanded,
         }
       )}
@@ -55,7 +55,7 @@ function Events({ isExpanded }: EventsProps) {
                 log.eventData?.response?.status_details?.error != null;
 
               return (
-                <div key={log.id} className="border-t border-border py-2 px-6 font-mono">
+                <div key={log.id} className="border-t border-border py-2 font-mono">
                   <div
                     onClick={() => toggleExpand(log.id)}
                     className="flex items-center justify-between cursor-pointer"
