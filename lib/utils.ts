@@ -84,3 +84,21 @@ export function injectTransferTools(agentDefs: AgentConfig[]): AgentConfig[] {
 
   return agentDefs;
 }
+
+export function webSearchTool(): Tool {
+  return {
+    type: "function",
+    name: "webSearch",
+    description: "Performs a web search based on the user query.",
+    parameters: {
+      type: "object",
+      properties: {
+        query: {
+          type: "string",
+          description: "The search query provided by the user.",
+        },
+      },
+      required: ["query"],
+    },
+  };
+}

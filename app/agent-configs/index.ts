@@ -1,11 +1,11 @@
 import { AllAgentConfigsType } from "@/lib/types";
 
-import simpleExample from "@/app/agent-configs/simple-example";
-import webSearch from "@/app/agent-configs/web-search/web-search-agent";
+import simpleExample from "@/app/agent-configs/web-search/index";
+import customerService from "@/app/agent-configs/customer-service/index";
 
 export const allAgentSets: AllAgentConfigsType = {
   simpleExample,
-  webSearch,
+  customerService,
 };
 
 export const defaultAgentSetKey = "simpleExample";
