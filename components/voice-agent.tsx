@@ -1,8 +1,15 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+
 import { useSearchParams } from "next/navigation";
+
 import { v4 as uuidv4 } from "uuid";
+
+import { useHandleServerEvent } from "@/hooks/use-handle-server-event";
+
+import { createRealtimeConnection } from "@/lib/realtime-connection";
+import { AgentConfig, SessionStatus } from "@/lib/types";
 
 import Transcript from "@/components/transcript";
 import Events from "@/components/events";
@@ -10,21 +17,12 @@ import Header from "@/components/header";
 import RightSidebar from "@/components/right-sidebar";
 import Messages from "@/components/messages";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-
-import { AgentConfig, SessionStatus } from "@/lib/types";
-
-import { useTranscript } from "@/app/contexts/transcript-context";
-import { useEvent } from "@/app/contexts/event-context";
-import { useHandleServerEvent } from "@/hooks/use-handle-server-event";
-import { useIsMobile } from "@/hooks/use-mobile";
-
-import { createRealtimeConnection } from "@/lib/realtime-connection";
-
-import { allAgentSets, defaultAgentSetKey } from "@/app/agent-configs";
+import { useTranscript } from "@/components/contexts/transcript-context";
+import { useEvent } from "@/components/contexts/event-context";
+import { allAgentSets, defaultAgentSetKey } from "@/components/agent-configs";
 
 function VoiceAgent() {
   const searchParams = useSearchParams();
-  const isMobile = useIsMobile();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const { transcriptItems, addTranscriptMessage, addTranscriptBreadcrumb } =
@@ -345,9 +343,9 @@ function VoiceAgent() {
     <div className="flex flex-col h-screen relative">
       <Header setIsSheetOpen={setIsSheetOpen} />
 
-      <div className="flex flex-1 gap-2 px-2 pb-2 overflow-hidden relative">
+      <div className="flex flex-1 px-2 pb-2 overflow-hidden relative">
         <div className="flex flex-1 flex-col min-w-0">
-          <div className="flex flex-1 gap-2 min-h-0">
+          <div className="flex flex-1 min-h-0">
             <Transcript className="flex-1" />
             <Events isExpanded={isEventsPaneExpanded} />
           </div>
@@ -364,7 +362,8 @@ function VoiceAgent() {
           />
         </div>
 
-        {isMobile ? (
+        {/* Mobile Sidebar */}
+        <div className="md:hidden">
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetContent className="w-[280px] sm:w-[320px] p-0 pt-4">
               <RightSidebar
@@ -382,7 +381,10 @@ function VoiceAgent() {
               />
             </SheetContent>
           </Sheet>
-        ) : (
+        </div>
+
+        {/* Desktop Sidebar */}
+        <div className="hidden md:block">
           <RightSidebar
             sessionStatus={sessionStatus}
             isAudioPlaybackEnabled={isAudioPlaybackEnabled}
@@ -396,7 +398,7 @@ function VoiceAgent() {
             handleSelectedAgentChange={handleSelectedAgentChange}
             selectedAgentConfigSet={selectedAgentConfigSet}
           />
-        )}
+        </div>
       </div>
     </div>
   );

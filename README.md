@@ -1,4 +1,4 @@
-<a href="https://openchat-beta.vercel.app">
+<a href="https://github.com/muradpm/voice">
   <img alt="An Open-source Realtime AI Voice Agent Built With Next.js." src="./public/preview/voice.png">
   <h1 align="center">Voice</h1>
 </a>
@@ -41,11 +41,11 @@ This demonstrates:
 
 This app utilizes the [OpenAI API](https://openai.com/) for its AI capabilities. It is configured to use OpenAI models for generating responses.
 
-<!-- ## Deploy Your Own
+## Deploy Your Own
 
 You can deploy your own version of the OpenChat to Vercel with one click:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmuradpm%2Fopenchat&env=CONVEX_DEPLOY_KEY,OPENAI_API_KEY&envDescription=Learn%20more%20about%20how%20to%20get%20the%20API%20Keys%20for%20the%20application&envLink=https%3A%2F%2Fgithub.com%2Fmuradpm%2Fopenchat%2Fblob%2Fmain%2F.env.example&demo-title=OpenChat&demo-description=An%20open-source%20AI%20chatbot%20built%20with%20Next.js%2015%2C%20Convex%2C%20and%20OpenAI.&demo-url=https%3A%2F%2Fopenchat-beta.vercel.app) -->
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmuradpm%2Fvoice&env=OPENAI_API_KEY,JINA_API_KEY&envDescription=Learn%20more%20about%20how%20to%20get%20the%20API%20Keys%20for%20the%20application&envLink=https%3A%2F%2Fgithub.com%2Fmuradpm%2Fopenchat%2Fblob%2Fmain%2F.env.example&demo-title=Voice&demo-description=An%20Open-source%20Realtime%20AI%20Voice%20Agent%20Built%20With%20Next.js&demo-url=https%3A%2F%2Fvoice-oss.vercel.app)
 
 ## Running locally
 

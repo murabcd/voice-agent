@@ -6,9 +6,10 @@ import { Copy } from "lucide-react";
 
 import { toast } from "sonner";
 
-import { Markdown } from "@/components/markdown";
 import { TranscriptItem } from "@/lib/types";
-import { useTranscript } from "@/app/contexts/transcript-context";
+
+import { Markdown } from "@/components/markdown";
+import { useTranscript } from "@/components/contexts/transcript-context";
 import { Button } from "@/components/ui/button";
 
 export interface TranscriptProps {

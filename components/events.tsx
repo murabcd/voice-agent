@@ -1,8 +1,11 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-import { useEvent } from "@/app/contexts/event-context";
+
 import { LoggedEvent } from "@/lib/types";
+import { cn } from "@/lib/utils";
+
+import { useEvent } from "@/components/contexts/event-context";
 
 export interface EventsProps {
   isExpanded: boolean;
@@ -33,10 +36,13 @@ function Events({ isExpanded }: EventsProps) {
 
   return (
     <div
-      className={
-        (isExpanded ? "w-1/3 overflow-auto" : "w-0 overflow-hidden opacity-0") +
-        " transition-all rounded-xl duration-200 ease-in-out flex flex-col bg-muted text-foreground"
-      }
+      className={cn(
+        "transition-all rounded-xl duration-200 ease-in-out flex flex-col bg-muted text-foreground",
+        {
+          "w-1/3 overflow-auto md:ml-2": isExpanded,
+          "w-0 overflow-hidden opacity-0": !isExpanded,
+        }
+      )}
       ref={eventLogsContainerRef}
     >
       {isExpanded && (

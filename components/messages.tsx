@@ -51,7 +51,7 @@ function Messages({
             }
           }}
           className="flex-1 px-4 py-2 focus:outline-none"
-          placeholder="Ask a follow up question..."
+          placeholder="Ask a follow up..."
         />
         <Button
           size="icon"
