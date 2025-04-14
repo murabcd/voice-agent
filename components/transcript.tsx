@@ -1,11 +1,15 @@
 "use-client";
 
 import React, { useEffect, useRef, useState } from "react";
+
+import { Copy } from "lucide-react";
+
+import { toast } from "sonner";
+
 import { Markdown } from "@/components/markdown";
 import { TranscriptItem } from "@/lib/types";
 import { useTranscript } from "@/app/contexts/transcript-context";
 import { Button } from "@/components/ui/button";
-import { Copy } from "lucide-react";
 
 export interface TranscriptProps {
   className?: string;
@@ -15,7 +19,6 @@ function Transcript({ className = "" }: TranscriptProps) {
   const { transcriptItems, toggleTranscriptItemExpand } = useTranscript();
   const transcriptRef = useRef<HTMLDivElement | null>(null);
   const [prevLogs, setPrevLogs] = useState<TranscriptItem[]>([]);
-  const [justCopied, setJustCopied] = useState(false);
 
   function scrollToBottom() {
     if (transcriptRef.current) {
@@ -37,16 +40,16 @@ function Transcript({ className = "" }: TranscriptProps) {
     }
 
     setPrevLogs(transcriptItems);
-  }, [transcriptItems]);
+  }, [transcriptItems, prevLogs]);
 
   const handleCopyTranscript = async () => {
     if (!transcriptRef.current) return;
     try {
       await navigator.clipboard.writeText(transcriptRef.current.innerText);
-      setJustCopied(true);
-      setTimeout(() => setJustCopied(false), 1500);
+      toast("Copied to clipboard");
     } catch (error) {
       console.error("Failed to copy transcript:", error);
+      toast.error("Failed to copy");
     }
   };
 
@@ -54,7 +57,7 @@ function Transcript({ className = "" }: TranscriptProps) {
     <div className={`flex flex-col flex-1 min-h-0 rounded-xl ${className}`}>
       <div className="relative flex-1 min-h-0">
         <Button
-          variant="secondary"
+          variant="outline"
           size="icon"
           onClick={handleCopyTranscript}
           className={`absolute top-3 right-2 mr-1 z-10`}

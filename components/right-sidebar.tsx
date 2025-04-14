@@ -1,5 +1,7 @@
 import React from "react";
+
 import { AgentConfig, SessionStatus } from "@/lib/types";
+
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import ScenarioSelector from "@/components/scenario-selector";

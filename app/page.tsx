@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 import VoiceAgent from "@/components/voice-agent";
 
@@ -9,7 +9,9 @@ export default function Page() {
   return (
     <TranscriptProvider>
       <EventProvider>
-        <VoiceAgent />
+        <Suspense fallback={<div>Loading...</div>}>
+          <VoiceAgent />
+        </Suspense>
       </EventProvider>
     </TranscriptProvider>
   );

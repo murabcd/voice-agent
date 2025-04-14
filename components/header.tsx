@@ -1,10 +1,18 @@
 import React from "react";
-import { AudioLines } from "lucide-react";
+import { AudioLines, Settings } from "lucide-react";
+
+import { useIsMobile } from "@/hooks/use-mobile";
+
 import { ModeToggle } from "@/components/mode-toggle";
+import { Button } from "@/components/ui/button";
 
-interface HeaderProps {}
+interface HeaderProps {
+  setIsSheetOpen: (open: boolean) => void;
+}
 
-const Header: React.FC<HeaderProps> = () => {
+const Header: React.FC<HeaderProps> = ({ setIsSheetOpen }) => {
+  const isMobile = useIsMobile();
+
   return (
     <div className="p-5 text-lg font-semibold flex justify-between items-center">
       <div className="flex items-center">
@@ -15,7 +23,14 @@ const Header: React.FC<HeaderProps> = () => {
           Realtime Voice <span className="text-muted-foreground">Agent</span>
         </div>
       </div>
-      <ModeToggle />
+      <div className="flex items-center gap-x-2">
+        {isMobile && (
+          <Button variant="outline" size="icon" onClick={() => setIsSheetOpen(true)}>
+            <Settings className="h-4 w-4" />
+          </Button>
+        )}
+        <ModeToggle />
+      </div>
     </div>
   );
 };

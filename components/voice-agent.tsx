@@ -9,12 +9,14 @@ import Events from "@/components/events";
 import Header from "@/components/header";
 import RightSidebar from "@/components/right-sidebar";
 import Messages from "@/components/messages";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 import { AgentConfig, SessionStatus } from "@/lib/types";
 
 import { useTranscript } from "@/app/contexts/transcript-context";
 import { useEvent } from "@/app/contexts/event-context";
 import { useHandleServerEvent } from "@/hooks/use-handle-server-event";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 import { createRealtimeConnection } from "@/lib/realtime-connection";
 
@@ -22,6 +24,8 @@ import { allAgentSets, defaultAgentSetKey } from "@/app/agent-configs";
 
 function VoiceAgent() {
   const searchParams = useSearchParams();
+  const isMobile = useIsMobile();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const { transcriptItems, addTranscriptMessage, addTranscriptBreadcrumb } =
     useTranscript();
@@ -220,13 +224,12 @@ function VoiceAgent() {
       session: {
         modalities: ["text", "audio"],
         instructions,
-        voice: "coral",
+        voice: "shimmer",
         input_audio_format: "pcm16",
         output_audio_format: "pcm16",
-        input_audio_transcription: { model: "gpt-4o-transcribe" },
+        input_audio_transcription: { model: "gpt-4o-mini-transcribe" },
         turn_detection: turnDetection,
         tools,
-        input_audio_noise_reduction: { type: "near_field" }, // TODO: Remove this once we have a better way to handle AEC
       },
     };
 
@@ -340,7 +343,7 @@ function VoiceAgent() {
 
   return (
     <div className="flex flex-col h-screen relative">
-      <Header />
+      <Header setIsSheetOpen={setIsSheetOpen} />
 
       <div className="flex flex-1 gap-2 px-2 pb-2 overflow-hidden relative">
         <div className="flex flex-1 flex-col min-w-0">
@@ -361,19 +364,39 @@ function VoiceAgent() {
           />
         </div>
 
-        <RightSidebar
-          sessionStatus={sessionStatus}
-          isAudioPlaybackEnabled={isAudioPlaybackEnabled}
-          setIsAudioPlaybackEnabled={setIsAudioPlaybackEnabled}
-          isEventsPaneExpanded={isEventsPaneExpanded}
-          setIsEventsPaneExpanded={setIsEventsPaneExpanded}
-          agentSetKey={agentSetKey || defaultAgentSetKey}
-          handleAgentSetChange={handleAgentSetChange}
-          allAgentSets={allAgentSets}
-          selectedAgentName={selectedAgentName}
-          handleSelectedAgentChange={handleSelectedAgentChange}
-          selectedAgentConfigSet={selectedAgentConfigSet}
-        />
+        {isMobile ? (
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+            <SheetContent className="w-[280px] sm:w-[320px] p-0 pt-4">
+              <RightSidebar
+                sessionStatus={sessionStatus}
+                isAudioPlaybackEnabled={isAudioPlaybackEnabled}
+                setIsAudioPlaybackEnabled={setIsAudioPlaybackEnabled}
+                isEventsPaneExpanded={isEventsPaneExpanded}
+                setIsEventsPaneExpanded={setIsEventsPaneExpanded}
+                agentSetKey={agentSetKey || defaultAgentSetKey}
+                handleAgentSetChange={handleAgentSetChange}
+                allAgentSets={allAgentSets}
+                selectedAgentName={selectedAgentName}
+                handleSelectedAgentChange={handleSelectedAgentChange}
+                selectedAgentConfigSet={selectedAgentConfigSet}
+              />
+            </SheetContent>
+          </Sheet>
+        ) : (
+          <RightSidebar
+            sessionStatus={sessionStatus}
+            isAudioPlaybackEnabled={isAudioPlaybackEnabled}
+            setIsAudioPlaybackEnabled={setIsAudioPlaybackEnabled}
+            isEventsPaneExpanded={isEventsPaneExpanded}
+            setIsEventsPaneExpanded={setIsEventsPaneExpanded}
+            agentSetKey={agentSetKey || defaultAgentSetKey}
+            handleAgentSetChange={handleAgentSetChange}
+            allAgentSets={allAgentSets}
+            selectedAgentName={selectedAgentName}
+            handleSelectedAgentChange={handleSelectedAgentChange}
+            selectedAgentConfigSet={selectedAgentConfigSet}
+          />
+        )}
       </div>
     </div>
   );
