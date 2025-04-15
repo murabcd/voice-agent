@@ -9,7 +9,7 @@ export async function GET() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini-realtime-preview",
+        model: "gpt-4o-realtime-preview", // TOOD: Temporary using larger model for testing instruction following
       }),
     });
     const data = await response.json();

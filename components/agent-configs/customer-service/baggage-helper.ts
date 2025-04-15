@@ -73,7 +73,7 @@ const baggage: AgentConfig = {
     },
     {
       type: "function",
-      name: "fetchWebsiteContent",
+      name: "fetchBaggagePolicies",
       description:
         "Get up-to-date information from the Ural Airlines website to provide accurate data to the user. Use this tool to find information about baggage rules, fares, and other airline services.",
       parameters: {
@@ -238,7 +238,7 @@ true/false/need_more_information
       console.log(completion.choices[0].message.content);
       return { result: completion.choices[0].message.content };
     },
-    fetchWebsiteContent: async ({ targetUrl }) => {
+    fetchBaggagePolicies: async ({ targetUrl }) => {
       console.log(`[toolLogic] fetching content from ${targetUrl}`);
       try {
         const response = await fetch(
@@ -253,7 +253,7 @@ true/false/need_more_information
         const data = await response.json();
         return { content: data.content };
       } catch (error) {
-        console.error(`Error in fetchWebsiteContent:`, error);
+        console.error(`Error in fetchBaggagePolicies:`, error);
         return { error: `Internal error while fetching content from ${targetUrl}` };
       }
     },

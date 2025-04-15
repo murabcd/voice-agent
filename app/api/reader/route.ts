@@ -15,9 +15,8 @@ export async function GET(request: Request) {
     const response = await fetch(JINA_READER_URL + targetUrl, {
       headers: {
         Authorization: `Bearer ${process.env.JINA_API_KEY}`,
-        Accept: "application/json",
         "X-Return-Format": "markdown",
-        "X-Engine": "direct",
+        "X-Engine": "cf-browser-rendering",
       },
     });
 
