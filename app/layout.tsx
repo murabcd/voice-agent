@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://voice-oss.vercel.app"),
   title: "Voice",
   description: "Open source realtime voice agent.",
   icons: {
@@ -29,6 +30,26 @@ export const metadata: Metadata = {
         url: "/logo-light.svg",
       },
     ],
+  },
+  openGraph: {
+    title: "Voice",
+    description: "Open source realtime voice agent.",
+    images: [
+      {
+        url: "/api/og",
+        width: 1200,
+        height: 630,
+        alt: "Voice OG Image",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Voice",
+    description: "Open source realtime voice agent.",
+    images: ["/api/og"],
   },
 };
 

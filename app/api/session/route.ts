@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
+import { env } from "@/env.mjs";
 
 export async function GET() {
   try {
     const response = await fetch("https://api.openai.com/v1/realtime/sessions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        Authorization: `Bearer ${env.OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

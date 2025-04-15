@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { env } from "@/env.mjs";
 
 const JINA_READER_URL = "https://r.jina.ai/";
 
@@ -14,7 +15,7 @@ export async function GET(request: Request) {
     }
     const response = await fetch(JINA_READER_URL + targetUrl, {
       headers: {
-        Authorization: `Bearer ${process.env.JINA_API_KEY}`,
+        Authorization: `Bearer ${env.JINA_API_KEY}`,
         "X-Return-Format": "markdown",
         "X-Engine": "cf-browser-rendering",
       },

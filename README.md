@@ -1,4 +1,4 @@
-<a href="https://github.com/muradpm/voice">
+<a href="https://voice-oss.vercel.app">
   <img alt="An Open-source Realtime AI Voice Agent Built With Next.js." src="./public/preview/voice.png">
   <h1 align="center">Voice</h1>
 </a>
