@@ -79,7 +79,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
       </div>
 
       {/* Logs Toggle */}
-      <div className="flex items-center justify-between">
+      <div className="hidden md:flex items-center justify-between">
         <Label
           htmlFor="logs-sidebar"
           className="flex items-center cursor-pointer text-sm pr-2"

@@ -9,9 +9,10 @@ import { useEvent } from "@/components/contexts/event-context";
 
 export interface EventsProps {
   isExpanded: boolean;
+  variant?: "drawer" | "panel";
 }
 
-function Events({ isExpanded }: EventsProps) {
+function Events({ isExpanded, variant = "panel" }: EventsProps) {
   const [prevEventLogs, setPrevEventLogs] = useState<LoggedEvent[]>([]);
   const eventLogsContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -37,15 +38,18 @@ function Events({ isExpanded }: EventsProps) {
   return (
     <div
       className={cn(
-        "transition-all rounded-xl duration-200 ease-in-out flex flex-col bg-muted text-foreground",
-        {
+        "text-foreground",
+        variant === "panel" &&
+          "transition-all rounded-xl duration-200 ease-in-out flex flex-col bg-muted",
+        variant === "panel" && {
           "w-1/3 overflow-auto md:ml-2 md:p-4": isExpanded,
           "w-0 overflow-hidden opacity-0": !isExpanded,
-        }
+        },
+        variant === "drawer" && "flex flex-col bg-muted rounded-xl"
       )}
       ref={eventLogsContainerRef}
     >
-      {isExpanded && (
+      {(isExpanded || variant === "drawer") && (
         <div>
           <div>
             {loggedEvents.map((log) => {
