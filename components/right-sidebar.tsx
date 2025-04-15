@@ -39,7 +39,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
   const isConnected = sessionStatus === "CONNECTED";
 
   return (
-    <div className="w-64 px-4 flex flex-col gap-y-6">
+    <div className="md:w-64 px-4 flex flex-col gap-y-6">
       <h3 className="text-lg font-semibold">Settings</h3>
 
       {/* Scenario Selector */}

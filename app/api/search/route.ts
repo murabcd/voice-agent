@@ -13,8 +13,6 @@ export async function POST(req: Request) {
       input: query,
     });
 
-    console.log(response.output_text);
-
     return NextResponse.json(response);
   } catch (error: any) {
     console.error("Error in /search:", error);

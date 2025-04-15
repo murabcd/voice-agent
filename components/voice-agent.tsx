@@ -63,7 +63,14 @@ function VoiceAgent() {
   });
 
   useEffect(() => {
-    const agentConfigKey = defaultAgentSetKey;
+    let agentConfigKey = searchParams.get("agentConfig");
+
+    if (!agentConfigKey || !allAgentSets[agentConfigKey]) {
+      agentConfigKey = defaultAgentSetKey;
+      const url = new URL(window.location.toString());
+      url.searchParams.set("agentConfig", agentConfigKey);
+      window.history.replaceState({}, "", url);
+    }
 
     const agents = allAgentSets[agentConfigKey];
     const agentKeyToUse = agents[0]?.name || "";
@@ -76,7 +83,7 @@ function VoiceAgent() {
     if (storedLogsExpanded) {
       setIsEventsPaneExpanded(storedLogsExpanded === "true");
     }
-  }, [selectedAgentName]);
+  }, [searchParams, selectedAgentName]);
 
   useEffect(() => {
     if (sessionStatus === "CONNECTED" && selectedAgentConfigSet && selectedAgentName) {
