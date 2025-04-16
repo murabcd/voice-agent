@@ -15,7 +15,7 @@ const search: AgentConfig = {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ query, model: "gpt-4o" }),
+          body: JSON.stringify({ query, model: "gpt-4.1" }),
         });
 
         if (!response.ok) {

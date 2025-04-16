@@ -218,7 +218,7 @@ true/false/need_more_information
         },
       ];
 
-      const model = "gpt-4o-mini";
+      const model = "gpt-4.1-mini";
       console.log(`checking order eligibility with model=${model}`);
 
       const response = await fetch("/api/chat/completions", {
