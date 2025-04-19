@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(completion);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in /chat:", error);
     return NextResponse.json({ error: error }, { status: 500 });
   }

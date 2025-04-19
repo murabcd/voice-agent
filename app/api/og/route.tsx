@@ -1,7 +1,6 @@
-import { ImageResponse } from "@vercel/og";
-import { NextRequest } from "next/server";
+import { ImageResponse } from "next/og";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   return new ImageResponse(
     (
       <div

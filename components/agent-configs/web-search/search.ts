@@ -1,6 +1,7 @@
 import { AgentConfig } from "@/lib/types";
 import { webSearchTool } from "@/lib/utils";
 import { searchWebPrompt } from "@/lib/ai/prompts";
+import { getModelId, MODEL_CHAT_MINI } from "@/lib/ai/models";
 
 const search: AgentConfig = {
   name: "search",
@@ -15,7 +16,7 @@ const search: AgentConfig = {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ query, model: "gpt-4.1" }),
+          body: JSON.stringify({ query, model: getModelId(MODEL_CHAT_MINI) }),
         });
 
         if (!response.ok) {

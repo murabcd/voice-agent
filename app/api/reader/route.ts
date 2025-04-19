@@ -31,7 +31,7 @@ export async function GET(request: Request) {
 
     const content = await response.text();
     return NextResponse.json({ content });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in /reader:", error);
     return NextResponse.json({ error: error }, { status: 500 });
   }

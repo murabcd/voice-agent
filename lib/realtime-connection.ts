@@ -1,4 +1,5 @@
 import { RefObject } from "react";
+import { getModelId, MODEL_REALTIME_MINI } from "@/lib/ai/models";
 
 export async function createRealtimeConnection(
   EPHEMERAL_KEY: string,
@@ -21,7 +22,7 @@ export async function createRealtimeConnection(
   await pc.setLocalDescription(offer);
 
   const baseUrl = "https://api.openai.com/v1/realtime";
-  const model = "gpt-4o-mini-realtime-preview";
+  const model = getModelId(MODEL_REALTIME_MINI);
 
   const sdpResponse = await fetch(`${baseUrl}?model=${model}`, {
     method: "POST",

@@ -10,6 +10,7 @@ import { useHandleServerEvent } from "@/hooks/use-handle-server-event";
 
 import { createRealtimeConnection } from "@/lib/realtime-connection";
 import { AgentConfig, SessionStatus } from "@/lib/types";
+import { getModelId, MODEL_TRANSCRIBE_MINI } from "@/lib/ai/models";
 
 import Transcript from "@/components/transcript";
 import Events from "@/components/events";
@@ -225,7 +226,7 @@ function VoiceAgent() {
         voice: "shimmer",
         input_audio_format: "pcm16",
         output_audio_format: "pcm16",
-        input_audio_transcription: { model: "gpt-4o-mini-transcribe" },
+        input_audio_transcription: { model: getModelId(MODEL_TRANSCRIBE_MINI) },
         turn_detection: turnDetection,
         tools,
       },

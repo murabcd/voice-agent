@@ -1,5 +1,6 @@
 import { AgentConfig } from "@/lib/types";
 import { baggageHelperPrompt } from "@/lib/ai/prompts";
+import { getModelId, MODEL_CHAT_MINI } from "@/lib/ai/models";
 
 const baggage: AgentConfig = {
   name: "baggage",
@@ -145,30 +146,30 @@ const baggage: AgentConfig = {
       return `
 The policy of Ural Airlines regarding baggage and additional services is designed to ensure transparency and convenience for passengers. The main rules are listed below:
 
-1. GENERAL RULES FOR BAGGAGE TRANSPORTATION
+1. General rules for baggage transportation
 • Baggage allowance: The free baggage allowance depends on the ticket fare. Usually it is 23 kg for checked baggage and 5-10 kg for hand luggage.
 • Excess baggage: An additional fee is charged for exceeding the norm, which depends on the route and weight.
 • Prohibited items: Hazardous materials, weapons and certain liquids are prohibited for transportation in accordance with international safety regulations.
 
-2. CONDITIONS FOR THE TRANSPORTATION OF SPECIAL BAGGAGE
+2. Conditions for the transportation of special baggage
 • Sports equipment: May be transported as part of the free allowance or for an additional fee if it exceeds weight restrictions.
 • Musical instruments: Can be transported in the cabin as hand luggage, provided that an additional seat is purchased, or in the luggage compartment with appropriate packaging.
 • Pets: Transportation of animals is possible in compliance with the airline's rules and the availability of necessary documents.
 
-3. DAMAGE OR LOSS OF BAGGAGE
+3. Damage or loss of baggage
 • Responsibility: The airline is responsible for the loss or damage of baggage in accordance with international standards (Warsaw Convention).
 • Procedure: In case of loss or damage to baggage, the passenger must contact the baggage tracing service at the airport of arrival and fill out the appropriate act.
 • Compensation: The amount of compensation is determined in accordance with the rules of the airline and international agreements.
 
-4. RETURN AND CHANGE OF SERVICES
+4. Return and change of services
 • Ticket refunds: The possibility of a refund depends on the fare. Some fares are non-refundable.
 • Change of reservation: Changes are possible for an additional fee, depending on the fare and availability of seats.
 
-5. ADDITIONAL SERVICES
+5. Additional services
 • Seat selection: Passengers can choose a seat in the cabin for an additional fee.
 • Meals on board: Special meals can be ordered in advance for a separate fee.
 
-6. ADDITIONAL CONDITIONS
+6. Additional conditions
 • Subsidized transportation: Preferential fares are available for certain categories of passengers.
 • Communication: To clarify any questions, please contact our passenger support service.
 
@@ -218,7 +219,7 @@ true/false/need_more_information
         },
       ];
 
-      const model = "gpt-4.1-mini";
+      const model = getModelId(MODEL_CHAT_MINI);
       console.log(`checking order eligibility with model=${model}`);
 
       const response = await fetch("/api/chat/completions", {

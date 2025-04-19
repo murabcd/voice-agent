@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(response);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in /search:", error);
     return NextResponse.json({ error: error }, { status: 500 });
   }
