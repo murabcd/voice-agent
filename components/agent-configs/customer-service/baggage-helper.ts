@@ -53,7 +53,7 @@ const baggage: AgentConfig = {
 
 # Details
 - Note that this agent has access to the full conversation history, so you only need to provide high-level details.
-- ALWAYS check retrievePolicy first to make sure we have the appropriate context. 
+- ALWAYS check retrievePolicy first to make sure we have the appropriate context.
 - Note that this may take up to 10 seconds, so please provide the user with small updates every few seconds, such as 'I need a little more time'.`,
       parameters: {
         type: "object",
@@ -101,17 +101,17 @@ const baggage: AgentConfig = {
             order_date: "2025-04-01T09:30:00Z",
             flight_date: "2025-04-20T14:00:00Z",
             order_status: "booked",
-            total_rub: 35000.0,
+            total_usd: 350.0,
             items: [
               {
-                item_id: "TKT-MOW-VVO",
-                item_name: "Ticket Moscow to Vladivostok",
-                retail_price_rub: 30000.0,
+                item_id: "TKT-LDN-PAR",
+                item_name: "Ticket London to Paris",
+                retail_price_usd: 300.0,
               },
               {
                 item_id: "BAG-EXTRA-20KG",
                 item_name: "Extra Baggage 20kg",
-                retail_price_rub: 5000.0,
+                retail_price_usd: 50.0,
               },
             ],
           },
@@ -120,22 +120,22 @@ const baggage: AgentConfig = {
             order_date: "2025-04-05T10:15:00Z",
             flight_date: "2025-04-25T10:00:00Z",
             order_status: "completed",
-            total_rub: 28000.0,
+            total_usd: 280.0,
             items: [
               {
-                item_id: "TKT-EKB-SVO",
-                item_name: "Ticket Yekaterinburg to Moscow",
-                retail_price_rub: 20000.0,
+                item_id: "TKT-BER-ROM",
+                item_name: "Ticket Berlin to Rome",
+                retail_price_usd: 200.0,
               },
               {
                 item_id: "BAG-STD-23KG",
                 item_name: "Standard Baggage 23kg",
-                retail_price_rub: 0.0,
+                retail_price_usd: 0.0,
               },
               {
                 item_id: "SEAT-SELECT",
                 item_name: "Seat Selection",
-                retail_price_rub: 3000.0,
+                retail_price_usd: 30.0,
               },
             ],
           },
@@ -214,7 +214,7 @@ true/false/need_more_information
 
 # Return Next Steps
 // Explain to the user that the user will get a text message with next steps. Only if is_eligible=true, otherwise "None". Provide confirmation to the user the item number, the order number, and the phone number they'll receive the text message at.
-</output_format>  
+</output_format>
 `,
         },
       ];
