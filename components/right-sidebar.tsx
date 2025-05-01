@@ -68,7 +68,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
           htmlFor="audio-playback-sidebar"
           className="flex items-center cursor-pointer text-sm pr-2"
         >
-          Audio playback
+          Playback
         </Label>
         <Switch
           id="audio-playback-sidebar"
@@ -84,7 +84,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({
           htmlFor="logs-sidebar"
           className="flex items-center cursor-pointer text-sm pr-2"
         >
-          Logs panel
+          Logs
         </Label>
         <Switch
           id="logs-sidebar"

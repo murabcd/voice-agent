@@ -1,4 +1,4 @@
-import greeter from "./simple-example";
+import greeter from "./greeter";
 import search from "./search";
 import { injectTransferTools } from "@/lib/utils";
 

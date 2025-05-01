@@ -37,7 +37,7 @@ export async function GET() {
               fontSize: 20,
             }}
           >
-            github.com/muradpm
+            github.com/murabcd
           </span>
         </div>
         <div

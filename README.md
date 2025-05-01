@@ -7,11 +7,9 @@
   An Open-source Realtime AI Voice Agent Built With Next.js, and OpenAI. 
 </p>
 
-This demonstrates:
-
-- Sequential agent handoffs according to a defined agent graph (taking inspiration from [OpenAI Swarm](https://github.com/openai/swarm))
+- Sequential agent handoffs according to a defined agent graph (inspiration from [OpenAI Swarm](https://github.com/openai/swarm))
 - Background escalation for high-stakes decisions
-- Prompting models to follow a state machine, for example to accurately collect things like names and phone numbers with confirmation character by character to authenticate a user.
+- Prompting models to follow a state machine, for example to accurately collect things like names and phone numbers with confirmation character by character to authenticate a user
 
 <p align="center">
   <a href="#features"><strong>Features</strong></a> ·
@@ -25,7 +23,7 @@ This demonstrates:
 
 - [Next.js](https://nextjs.org) App Router
   - Advanced routing for seamless navigation and performance
-  - React Server Components (RSCs) and Server Actions for server-side rendering and increased performance
+  - React Server Components (RSCs) for server-side rendering and increased performance
 - [OpenAI](https://openai.com/) Integration
   - Leverages OpenAI's powerful models for chat generation.
   - Direct API calls for text generation and other AI features.
@@ -33,13 +31,20 @@ This demonstrates:
 - [Jina Reader](https://jina.ai/) Integration
   - Advanced web scraping capabilities for extracting structured data from websites
   - Enhances the AI's ability to process and understand web content
-- [shadcn/ui](https://ui.shadcn.com)
+- [Shadcn/ui](https://ui.shadcn.com)
   - Styling with [Tailwind CSS](https://tailwindcss.com)
   - Component primitives from [Radix UI](https://radix-ui.com) for accessibility and flexibility
 
 ## Model Provider
 
 This app utilizes the [OpenAI API](https://openai.com/) for its AI capabilities. It is configured to use OpenAI models for generating responses.
+
+- Realtime Model (`gpt-4o-mini-realtime-preview`): Higher quality conversational model with higher latency
+- Realtime Mini Model (`gpt-4o-realtime-preview`): Optimized for low-latency conversational responses
+- Chat Model (`gpt-4.1`): General purpose GPT-4.1 model
+- Chat Mini Model (`gpt-4.1-mini`): Smaller variant of GPT-4.1
+- Transcribe Model (`gpt-4o-transcribe`): Optimized for speech-to-text transcription
+- Transcribe Mini Model (`gpt-4o-mini-transcribe`): Optimized for low-latency speech-to-text transcription
 
 ## Deploy Your Own
 
