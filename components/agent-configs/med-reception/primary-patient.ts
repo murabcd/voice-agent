@@ -58,7 +58,7 @@ const scheduleAppointmentTool: Tool = {
 };
 
 const primaryPatientAgentConfig: AgentConfig = {
-  name: "PrimaryPatientHandler",
+  name: "primary",
   publicDescription: "Handles inquiries and scheduling for new patients.",
   instructions: PrimaryPatientPrompt,
   tools: [checkAvailabilityTool, scheduleAppointmentTool],

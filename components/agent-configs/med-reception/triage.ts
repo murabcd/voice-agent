@@ -8,8 +8,8 @@ export const triageAgentConfig: AgentConfig = {
   tools: [],
   toolLogic: {},
   downstreamAgents: [
-    { name: "PrimaryPatientHandler", publicDescription: "Handles new patients" },
-    { name: "SecondaryPatientHandler", publicDescription: "Handles existing patients" },
+    { name: "primary", publicDescription: "Handles new patients" },
+    { name: "secondary", publicDescription: "Handles existing patients" },
   ],
 };
 

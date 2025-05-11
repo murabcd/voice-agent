@@ -251,8 +251,8 @@ export const TriagePrompt = `
 *   Provide small updates if waiting longer than 10 seconds.
 
 ## Agent Transfer (Outgoing)
-*   **Primary Patient:** Transfer to the 'PrimaryPatientHandler' agent. Provide context (e.g., "New patient seeking appointment for [specialty/reason if mentioned]").
-*   **Secondary Patient:** Transfer to the 'SecondaryPatientHandler' agent. Provide context (e.g., "Existing patient asking about [topic]").
+*   **Primary Patient:** Transfer to the 'primary' agent. Provide context (e.g., "New patient seeking appointment for [specialty/reason if mentioned]").
+*   **Secondary Patient:** Transfer to the 'secondary' agent. Provide context (e.g., "Existing patient asking about [topic]").
 *   **Spam:** Politely end the call. Clearly state the intended action before ending the call.
 
 ## Agent Transfer (Incoming)

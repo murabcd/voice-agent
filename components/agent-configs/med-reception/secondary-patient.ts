@@ -83,7 +83,7 @@ const cancelAppointmentTool: Tool = {
 };
 
 const secondaryPatientAgentConfig: AgentConfig = {
-  name: "SecondaryPatientHandler",
+  name: "secondary",
   publicDescription: "Handles inquiries and requests from existing patients.",
   instructions: SecondaryPatientPrompt,
   tools: [
