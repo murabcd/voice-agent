@@ -31,7 +31,7 @@ function Messages({
   function getConnectionButtonLabel() {
     if (isConnected) return "Disconnect";
     if (isConnecting) return "Connecting...";
-    return "Connect";
+    return "Start session";
   }
 
   return (
@@ -57,7 +57,7 @@ function Messages({
           size="icon"
           onClick={onSendMessage}
           disabled={!canSend || !userText.trim()}
-          className="rounded-full px-2 py-2 disabled:opacity-50"
+          className="px-2 py-2 disabled:opacity-50"
         >
           <ArrowUp />
         </Button>
